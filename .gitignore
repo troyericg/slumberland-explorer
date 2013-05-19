@@ -4,6 +4,7 @@
 
 # Ignore unnecessary folders #
 /_views
+/_js/_externals
 /misc
 
 # OS generated files #
