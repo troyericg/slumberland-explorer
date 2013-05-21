@@ -290,25 +290,25 @@ ul.num-ticks li:hover {
 }
 
 
-#link-controls ul.characters p span {
+#link-controls ul p span {
 	display: inline;
 	float: right;
 	width: 0px;
 	height: 0px;
-	margin-right: 84px;
+/*	margin-right: 84px;*/
 	border-style: solid;
 	border-width: 7px 5px 0 5px;
 	border-color: #808080 transparent transparent transparent;
 }
 
 
-#link-controls ul.characters p span:after {
+#link-controls ul p span:after {
 	content: ".";
 	visibility: hidden;
 }
 
 
-#link-controls ul.characters.expanded {
+#link-controls ul.expanded {
 	min-height: 600px;
 	height: auto;
 
@@ -319,7 +319,7 @@ ul.num-ticks li:hover {
 }
 
 
-#link-controls ul.characters.expanded p span {
+#link-controls ul.expanded p span {
 	width: 0px;
 	height: 0px;
 	border-style: solid;
