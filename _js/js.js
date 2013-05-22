@@ -71,51 +71,8 @@ Slumberland = {
 		});
 	},
 
-	buildCharFilters: function(selector, people){
+	buildFilters: function(selector, people, themes){
 		var list = 'ul.characters', item;
-		$entries = $(Slumberland.config.entry);
-
-		item = $('<li />').html('All Characters');
-		$(list).append(item);
-
-		$.each(people, function(index, elem){
-			item = $('<li />');
-			item.html(elem);
-			$(list).append(item);
-		});
-
-		$(selector).append($(list));
-
-		$(list + ' li').each(function(i, index){
-			var mainChar;
-			
-			switch ( $(this).text() ) {
-				case 'All Characters': mainChar = this; break;
-				case 'King Morpheus': mainChar = this; break;
-				case 'The Princess': mainChar = this; break;
-				case 'Flip': mainChar = this; break;
-				case 'Impie': mainChar = this; break;
-				case 'Doctor Pill': mainChar = this; break;
-				case 'The Professor': mainChar = this; break;
-			}
-			$(mainChar).appendTo($('ul.characters-mini'));
-
-		});
-
-		$('#link-controls ul li').on("click",function(){
-			var person = $(this).text();
-			$('#link-controls ul li').removeClass('buttonOn');
-			$(this).addClass('buttonOn');
-
-			// console.log("Lower: " + $("#slider-range").slider("values", 0));
-			// console.log("Upper: " + $("#slider-range").slider("values", 1));
-			Slumberland.clickFilter(Slumberland.config.entry, 'characters', person);
-		});
-
-	},
-
-	buildContFilters: function(selector, people){
-		var list = 'ul.contents', item;
 		$entries = $(Slumberland.config.entry);
 
 		item = $('<li />').html('All Characters');
@@ -194,12 +151,20 @@ Slumberland = {
 					characterList.push(elem);
 				}
 			});
+
+			$.each(this.contents, function(index, elem){
+				if ($.inArray(elem, contentList) == -1) {
+					contentList.push(elem);
+				}
+			});
 			
 		});
 
 		characterList.sort();
+		contentList.sort();
+		console.log(contentList);
 		//Slumberland.buildContFilters();
-		Slumberland.buildCharFilters(Slumberland.config.linkFilters, characterList);
+		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentList);
 	},
 
 	rangeFilter: function(type, lower, upper){
