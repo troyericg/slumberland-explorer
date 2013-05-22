@@ -78,6 +78,8 @@ Slumberland = {
 		item = $('<li />').html('All Characters');
 		$(list).append(item);
 
+		console.log(themes);
+
 		$.each(people, function(index, elem){
 			item = $('<li />');
 			item.html(elem);
@@ -162,7 +164,6 @@ Slumberland = {
 
 		characterList.sort();
 		contentList.sort();
-		console.log(contentList);
 		//Slumberland.buildContFilters();
 		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentList);
 	},
