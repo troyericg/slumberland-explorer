@@ -78,7 +78,14 @@ Slumberland = {
 		item = $('<li />').html('All Characters');
 		$(list).append(item);
 
-		console.log(themes);
+
+		// Fresh new content count
+		//console.log(themes);
+		for (l=0; l<themes.length; l++) {
+			if (themes[l][1] < 10) {
+				console.log("tag: " + themes[l][0] + "; count: " + themes[l][1]);
+			}
+		}
 
 		$.each(people, function(index, elem){
 			item = $('<li />');
@@ -122,7 +129,9 @@ Slumberland = {
 		var characterList = [];
 		var contentList = [];
 
+		// Defines main objects in display
 		$.each(json, function(i, item){
+			that = this;
 			obj = $('<div />')
 					.attr('class','entry visible')
 					.data({
@@ -145,6 +154,7 @@ Slumberland = {
 			obj.prepend(oImg);
 			$(gallery).append(obj);
 
+			// Creates list of characters for filters 
 			$.each(this.characters, function(index, elem){
 				if (elem === "King Morphues") {
 					elem = "King Morpheus";
@@ -155,17 +165,41 @@ Slumberland = {
 			});
 
 			$.each(this.contents, function(index, elem){
-				if ($.inArray(elem, contentList) == -1) {
-					contentList.push(elem);
-				}
+				contentList.push(elem);
 			});
-			
 		});
 
+		var contentsCounted = Slumberland.charactersContents(contentList);
 		characterList.sort();
-		contentList.sort();
 		//Slumberland.buildContFilters();
-		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentList);
+		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentsCounted);
+	},
+
+	charactersContents: function(themes){
+		var miniArray = [], aFresh = [];
+
+		var arr = themes.sort();
+		var copy = arr.slice(0);
+
+		// COUNT AND CLEAR OUT DUPES //
+		for (j=0; j<arr.length; j++) {
+			var count = 0;
+
+			for (k=0; k<copy.length; k++) {
+				if (arr[j] == copy[k]) {
+					count++;
+					delete copy[k];
+				}
+			}
+
+			if (count > 0) {
+				var tinyArr = [];
+				tinyArr[0] = arr[j];
+				tinyArr[1] = count;
+				aFresh.push(tinyArr);
+			}
+		}
+		return aFresh;
 	},
 
 	rangeFilter: function(type, lower, upper){
@@ -225,7 +259,6 @@ Slumberland = {
 		}
 
 		numVisible = $('div.entry.visible').length;
-
 		$('div.status p.num-entries span').html(numVisible);
 		//return false;
 	},
