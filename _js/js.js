@@ -1,4 +1,4 @@
-<!--- hide script from old browsers
+<!-- // hide script from old browsers
 
 var Slumberland = Slumberland || {};
 
@@ -82,7 +82,7 @@ Slumberland = {
 		// Fresh new content count
 		//console.log(themes);
 		for (l=0; l<themes.length; l++) {
-			if (themes[l][1] < 10) {
+			if (themes[l][1] > 3 && themes[l][1] < 10) {
 				console.log("tag: " + themes[l][0] + "; count: " + themes[l][1]);
 			}
 		}
