@@ -72,32 +72,43 @@ Slumberland = {
 	},
 
 	buildFilters: function(selector, people, themes){
-		var list = 'ul.characters', item;
+		var charList = 'ul.characters', item;
+		var contList = 'ul.contents';
+		var mainThemes = [];
 		$entries = $(Slumberland.config.entry);
 
 		item = $('<li />').html('All Characters');
-		$(list).append(item);
+		$(charList).append(item);
 
-
-		// Fresh new content count
-		//console.log(themes);
 		for (l=0; l<themes.length; l++) {
-			if (themes[l][1] > 3 && themes[l][1] < 10) {
-				console.log("tag: " + themes[l][0] + "; count: " + themes[l][1]);
+			if (themes[l][1] > 10) {
+				mainThemes.push(themes[l]);
+				//console.log("tag: " + themes[l][0] + "; count: " + themes[l][1]);
 			}
 		}
 
+		// goes over every person name and adds them to the character list
 		$.each(people, function(index, elem){
 			item = $('<li />');
 			item.html(elem);
-			$(list).append(item);
+			$(charList).append(item);
 		});
 
-		$(selector).append($(list));
+		// goes over every tag name in the shortened array and adds them to the content list
+		$.each(mainThemes, function(indx, it){
+			numItem = $('<span />');it[0]
+			numItem.html(it[1]);
 
-		$(list + ' li').each(function(i, index){
+			listItem = $('<li />');
+			listItem.html(it[0].substring(0,1).toUpperCase() + it[0].substring(1));
+
+			listItem.append(numItem);
+			$(contList).append(listItem);
+		});
+
+
+		$(charList + ' li').each(function(idx, itm){
 			var mainChar;
-			
 			switch ( $(this).text() ) {
 				case 'All Characters': mainChar = this; break;
 				case 'King Morpheus': mainChar = this; break;
@@ -108,16 +119,14 @@ Slumberland = {
 				case 'The Professor': mainChar = this; break;
 			}
 			$(mainChar).appendTo($('ul.characters-mini'));
-
 		});
+
 
 		$('#link-controls ul li').on("click",function(){
 			var person = $(this).text();
 			$('#link-controls ul li').removeClass('buttonOn');
 			$(this).addClass('buttonOn');
 
-			// console.log("Lower: " + $("#slider-range").slider("values", 0));
-			// console.log("Upper: " + $("#slider-range").slider("values", 1));
 			Slumberland.clickFilter(Slumberland.config.entry, 'characters', person);
 		});
 
@@ -169,13 +178,13 @@ Slumberland = {
 			});
 		});
 
-		var contentsCounted = Slumberland.charactersContents(contentList);
+		var contentsCounted = Slumberland.countClearSort(contentList);
 		characterList.sort();
 		//Slumberland.buildContFilters();
 		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentsCounted);
 	},
 
-	charactersContents: function(themes){
+	countClearSort: function(themes){
 		var miniArray = [], aFresh = [];
 
 		var arr = themes.sort();

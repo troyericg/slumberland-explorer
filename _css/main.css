@@ -56,7 +56,7 @@ a:hover {
 	width: 100%;
 	height: 30px;
 	border-bottom: 3px solid #333;
-	margin-bottom: 60px;
+	margin-bottom: 40px;
 }
 
 
@@ -284,9 +284,18 @@ ul.num-ticks li:hover {
 
 
 #link-controls ul.characters {
+	display: none;
 	height: 20px;
 	overflow: hidden;
 	cursor: pointer;
+}
+
+#link-controls ul.contents li span {
+	color: #808080;
+	font-family: arial, sans-serif;
+	font-size: 11px;
+	letter-spacing: 1px;
+	margin-left: 10px;
 }
 
 
@@ -391,8 +400,6 @@ ul.num-ticks li:hover {
 }
 
 
-
-
 .text-container.embiggen-image {
 	opacity: 0;
 
@@ -458,9 +465,12 @@ ul.num-ticks li:hover {
 	right: 0;
 	width: 40px;
 	height: 40px;
-	background: url(../assets/images/close_button.png);
+	color:blue;
+	content: "X";
+	cursor: pointer;
+/*	background: url(../assets/images/close_button.png);
 	background-repeat: no-repeat;
-	background-position: 0 -80px;
+	background-position: 0 -80px;*/
 }
 
 #modal-container .button-close:hover {
