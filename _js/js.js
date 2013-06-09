@@ -89,14 +89,16 @@ Slumberland = {
 
 		// goes over every person name and adds them to the character list
 		$.each(people, function(index, elem){
-			item = $('<li />');
-			item.html(elem);
-			$(charList).append(item);
+			var name = $('<span />').html(elem[0]);
+			var num = $('<span />').html(elem[1]);
+			
+			$item = $('<li />').append(name).append(num);
+			$(charList).append($item);
 		});
 
 		// goes over every tag name in the shortened array and adds them to the content list
 		$.each(mainThemes, function(indx, it){
-			numItem = $('<span />');it[0]
+			numItem = $('<span />'); // it[0]
 			numItem.html(it[1]);
 
 			listItem = $('<li />');
@@ -109,7 +111,9 @@ Slumberland = {
 
 		$(charList + ' li').each(function(idx, itm){
 			var mainChar;
-			switch ( $(this).text() ) {
+			var popCharacter = $(this).find('span:first').text();
+
+			switch ( popCharacter ) {
 				case 'All Characters': mainChar = this; break;
 				case 'King Morpheus': mainChar = this; break;
 				case 'The Princess': mainChar = this; break;
@@ -123,7 +127,7 @@ Slumberland = {
 
 
 		$('#link-controls ul li').on("click",function(){
-			var person = $(this).text();
+			var person = $(this).find('span:first').text();
 			$('#link-controls ul li').removeClass('buttonOn');
 			$(this).addClass('buttonOn');
 
@@ -168,9 +172,7 @@ Slumberland = {
 				if (elem === "King Morphues") {
 					elem = "King Morpheus";
 				}
-				if ($.inArray(elem, characterList) == -1) {
-					characterList.push(elem);
-				}
+				characterList.push(elem);
 			});
 
 			$.each(this.contents, function(index, elem){
@@ -179,15 +181,15 @@ Slumberland = {
 		});
 
 		var contentsCounted = Slumberland.countClearSort(contentList);
-		characterList.sort();
-		//Slumberland.buildContFilters();
-		Slumberland.buildFilters(Slumberland.config.linkFilters, characterList, contentsCounted);
+		var charactersCounted = Slumberland.countClearSort(characterList);
+
+		Slumberland.buildFilters(Slumberland.config.linkFilters, charactersCounted, contentsCounted);
 	},
 
-	countClearSort: function(themes){
+	countClearSort: function(list){
 		var miniArray = [], aFresh = [];
 
-		var arr = themes.sort();
+		var arr = list.sort();
 		var copy = arr.slice(0);
 
 		// COUNT AND CLEAR OUT DUPES //
@@ -232,7 +234,7 @@ Slumberland = {
 		if ($('.buttonOn').length == 0) {
 			returned.show();
 		} else {
-			Slumberland.clickFilter(Slumberland.config.entry, 'characters', $('.buttonOn').text());
+			Slumberland.clickFilter(Slumberland.config.entry, 'characters', $('.buttonOn').find('span:first').text());
 		}
 
 		numVisible = $('div.entry.visible').length;
