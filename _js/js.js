@@ -102,7 +102,7 @@ Slumberland = {
 			numItem.html(it[1]);
 
 			listItem = $('<li />');
-			listItem.html(it[0].substring(0,1).toUpperCase() + it[0].substring(1));
+			listItem.html($('<span />').html(it[0]));
 
 			listItem.append(numItem);
 			$(contList).append(listItem);
@@ -131,7 +131,7 @@ Slumberland = {
 			$('#link-controls ul li').removeClass('buttonOn');
 			$(this).addClass('buttonOn');
 
-			Slumberland.clickFilter(Slumberland.config.entry, 'characters', person);
+			Slumberland.clickFilter(Slumberland.config.entry, 'factors', person);
 		});
 
 	},
@@ -157,7 +157,8 @@ Slumberland = {
 						'img-medium': this.img,
 						'notes': this.notes,
 						'transcript': this.transcript,
-						'text': this.transcript_text
+						'text': this.transcript_text,
+						'factors': this.characters.concat(this.contents)
 					});
 			oImgLink = $('<a />').attr('href', this.img_link);
 			oImg = $('<img />').attr('src', this.img_thumb);
@@ -234,7 +235,7 @@ Slumberland = {
 		if ($('.buttonOn').length == 0) {
 			returned.show();
 		} else {
-			Slumberland.clickFilter(Slumberland.config.entry, 'characters', $('.buttonOn').find('span:first').text());
+			Slumberland.clickFilter(Slumberland.config.entry, 'factors', $('.buttonOn').find('span:first').text());
 		}
 
 		numVisible = $('div.entry.visible').length;
@@ -264,6 +265,8 @@ Slumberland = {
 		else {
 			allItems.filter(function(index){ 
 				curString = $(this).data(type);
+				console.log(factor);
+				console.log(curString);
 				return $.inArray(factor, curString) != -1;
 
 			}).addClass('visible').show();
