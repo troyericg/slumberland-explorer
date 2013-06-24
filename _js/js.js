@@ -308,6 +308,7 @@ Slumberland = {
 					case 'info-transcript':
 						if (elem.data('transcript') == true) {
 							contents = elem.data('text');
+							console.log(contents.replace(/$\n/,"<br /><br />"));
 						} else { 
 							contents = "This strip has not be transcribed. Help out the project by taking a few minutes to submit a transcription.<br /><br /><a href=\"#\" target=\"_blank\" class=\"button-transcribe\">TRANSCRIBE</a>";
 						}

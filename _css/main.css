@@ -241,9 +241,7 @@ ul.num-ticks li:hover {
 	letter-spacing: 2px;
 	text-transform: uppercase;
 	opacity: 0.5;
-}
-
-#link-controls div.status a:hover {
+} #link-controls div.status a:hover {
 	opacity: 1;
 }
 
@@ -465,21 +463,15 @@ ul.num-ticks li:hover {
 	right: 0;
 	width: 40px;
 	height: 40px;
-	color:blue;
-	content: "X";
 	cursor: pointer;
-/*	background: url(../assets/images/close_button.png);
+	background: url(../assets/images/close_button.png);
 	background-repeat: no-repeat;
-	background-position: 0 -80px;*/
-}
-
-#modal-container .button-close:hover {
+	background-position: 0 -80px;
+} #modal-container .button-close:hover {
 	background-position: 0 -40px;
-}
-
-#modal-container .button-close:active {
+} /*#modal-container .button-close:active {
 	background-position: 0 0;
-}
+}*/
 
 #modal-container .modal {
 	position: relative;
