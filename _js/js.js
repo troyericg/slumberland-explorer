@@ -15,7 +15,7 @@ Slumberland = {
 		console.log("it's ON.");
 		Slumberland.getData();
 		Slumberland.buildSlider();
-		Slumberland.bindActions();
+		//Slumberland.bindActions();
 		Slumberland.modalator(Slumberland.config.entry);
 	},
 
@@ -47,7 +47,6 @@ Slumberland = {
 				$("#amount").val("$" + ui.values[0] + " - $" + ui.values[1]);
 			},
 			change: function(event, ui) {
-				//console.log("lower: " + ui.values[0] + "; higher: " + ui.values[1]);
 				Slumberland.rangeFilter('year',ui.values[0], ui.values[1]);
 			}
 		});
@@ -60,18 +59,16 @@ Slumberland = {
 			$("#slider-range").slider("values", 1, setYear);
 		});
 
+		// reset all filters
 		$('#link-controls div.status a').click(function(){
-
 			$('#link-controls ul li').removeClass('buttonOn');
-
 			$("#slider-range").slider("values", 0, 1905);
 			$("#slider-range").slider("values", 1, 1914);
-			//entries.removeClass('ranged');
 			return false;
 		});
 	},
 
-	buildFilters: function(selector, people, themes){
+	buildFilters: function(selector, people, themes, years){
 		var charList = 'ul.characters', item;
 		var contList = 'ul.contents';
 		var mainThemes = [];
@@ -87,6 +84,10 @@ Slumberland = {
 			}
 		}
 
+		for (m=0; m<years.length; m++) {
+			$("li.year-tick[data-year*='" + years[m][0] + "']").data("numIssues", years[m][1])
+		}
+
 		// goes over every person name and adds them to the character list
 		$.each(people, function(index, elem){
 			var name = $('<span />').html(elem[0]);
@@ -97,16 +98,8 @@ Slumberland = {
 		});
 
 		// goes over every tag name in the shortened array and adds them to the content list
-		$.each(mainThemes, function(indx, it){
-			numItem = $('<span />'); // it[0]
-			numItem.html(it[1]);
-
-			listItem = $('<li />');
-			listItem.html($('<span />').html(it[0]));
-
-			listItem.append(numItem);
-			$(contList).append(listItem);
-		});
+		var $selectList = $("<select />").attr("id", "themes-list").appendTo( $(contList) );
+		Slumberland.buildDropDown(mainThemes);
 
 
 		$(charList + ' li').each(function(idx, itm){
@@ -128,7 +121,11 @@ Slumberland = {
 
 		$('#link-controls ul li').on("click",function(){
 			var person = $(this).find('span:first').text();
+			var themes = $('select#themes-list');
+
 			$('#link-controls ul li').removeClass('buttonOn');
+			themes.prop('selectedIndex',0);
+			themes.find("option").removeClass('buttonOn');
 			$(this).addClass('buttonOn');
 
 			Slumberland.clickFilter(Slumberland.config.entry, 'factors', person);
@@ -136,11 +133,35 @@ Slumberland = {
 
 	},
 
+	buildDropDown: function(data){
+		// Loops over themes and adds them to dropdown
+		var $themesList = $('select#themes-list');
+		var dataLength = data.length;
+		
+		$('<option></option>').val("default").html("ALL THEMES").appendTo($themesList);
+
+		for(i=0; i < dataLength; i++) {
+			$('<option></option>').val(data[i][0])
+								  .html(data[i].join(" "))
+								  .appendTo($themesList);
+		}
+
+		// working on theme dropdown
+		$('select#themes-list').change(function(){
+			var theme = $(this).val();
+
+			$('#link-controls ul li').removeClass('buttonOn');
+			$(this).find(":selected").attr('class','buttonOn');
+			Slumberland.clickFilter(Slumberland.config.entry, 'factors', theme);
+		});
+	},
+
 	entryDisplay: function(data){
 		var json = data;
 		var gallery = Slumberland.config.gallery;
-		var characterList = [];
-		var contentList = [];
+		var characterList = [],
+			contentList = [],
+			yearList = [];
 
 		// Defines main objects in display
 		$.each(json, function(i, item){
@@ -164,6 +185,14 @@ Slumberland = {
 			oImg = $('<img />').attr('src', this.img_thumb);
 			oImgLink.append(oImg);
 
+			if (obj.data("year") !== null) {
+				var year = obj.data("year").split("-")[0];
+			} else {
+				year = "1905";
+			}
+
+			yearList.push(year);
+
 			obj.html('<p>' + this.date_published + '</p>');
 			obj.prepend(oImg);
 			$(gallery).append(obj);
@@ -180,11 +209,12 @@ Slumberland = {
 				contentList.push(elem);
 			});
 		});
-
+		var yearsCounted = Slumberland.countClearSort(yearList);
 		var contentsCounted = Slumberland.countClearSort(contentList);
 		var charactersCounted = Slumberland.countClearSort(characterList);
+		//console.log(yearsCounted);
 
-		Slumberland.buildFilters(Slumberland.config.linkFilters, charactersCounted, contentsCounted);
+		Slumberland.buildFilters(Slumberland.config.linkFilters, charactersCounted, contentsCounted, yearsCounted);
 	},
 
 	countClearSort: function(list){
@@ -235,7 +265,8 @@ Slumberland = {
 		if ($('.buttonOn').length == 0) {
 			returned.show();
 		} else {
-			Slumberland.clickFilter(Slumberland.config.entry, 'factors', $('.buttonOn').find('span:first').text());
+			var buttonOn = $('.buttonOn').find('span:first').text() || $('.buttonOn').val();
+			Slumberland.clickFilter(Slumberland.config.entry, 'factors', buttonOn);
 		}
 
 		numVisible = $('div.entry.visible').length;
@@ -259,14 +290,14 @@ Slumberland = {
 
 		allItems.removeClass('visible').hide();
 		
-		if (factor === "All Characters") {
+		if (factor === "All Characters" || factor === "default") {
 			allItems.addClass('visible').show();
 		} 
 		else {
 			allItems.filter(function(index){ 
 				curString = $(this).data(type);
-				console.log(factor);
-				console.log(curString);
+				// console.log(factor);
+				// console.log(curString);
 				return $.inArray(factor, curString) != -1;
 
 			}).addClass('visible').show();
@@ -352,10 +383,26 @@ Slumberland = {
 	},
 
 	bindActions:function(){
-		var charList = $('ul.characters p');
-		charList.on('click', function(){
-			$('ul.characters').toggleClass('expanded');
+		var $years = $("ul.num-ticks li");
+		var $hoverBox = $("#num-tick-box");
+
+		$years.hover(function(e){
+			var numIssues = $(this).data("numIssues");
+			$hoverBox.stop().show();
+			$(this).mousemove(function(e){
+				var alph = $(this),
+					parentOffset = alph.parent().offset(),
+					yMous = e.pageY - 80,
+					xMous = (e.pageX - parentOffset.left) - 25;
+
+				$hoverBox.css({ 'left': xMous, 'top': yMous })
+				$hoverBox.find(".num-tick-box-inner").text(numIssues);
+			});
+			$hoverBox.show();
+		}, function(){
+				$hoverBox.hide();
 		});
+
 	}
 };
 
